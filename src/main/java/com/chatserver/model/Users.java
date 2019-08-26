@@ -15,7 +15,7 @@ import java.util.Set;
 public class Users {
 
     private static final Users users = new Users();
-    private final Map<String, User> userslist;
+    private final Map<String, User> usersMap;
     private ObjectMapper mapper;
 
     public static Users getInstance() {
@@ -23,36 +23,42 @@ public class Users {
     }
 
     private Users() {
-        userslist = new HashMap<>();
+        usersMap = new HashMap<>();
         mapper = new ObjectMapper();
     }
 
     public synchronized void addUser(User user) {
         if (null != user) {
-            userslist.putIfAbsent(user.getName(), user);
+            usersMap.putIfAbsent(user.getName(), user);
         }
     }
 
     public synchronized void removeUser(String name) {
-        if (userslist.containsKey(name)) {
-            userslist.remove(name);
+        if (usersMap.containsKey(name)) {
+            usersMap.remove(name);
         }
     }
 
-    public Map<String, User> getUserslist() {
-        return userslist;
+    public List<User> getlist() {
+        List<User> userList = new ArrayList<>();
+        Set<String> keys = usersMap.keySet();
+        for (String s : keys) {
+            User user = usersMap.get(s);
+            userList.add(user);
+        }
+        return userList;
     }
 
     public String getPass(String name) {
         String pass = "";
-        if (userslist.containsKey(name)) {
-            pass = userslist.get(name).getPassword();
+        if (usersMap.containsKey(name)) {
+            pass = usersMap.get(name).getPassword();
         }
         return pass;
     }
 
     public String getStatus(String name) {
-        boolean status = userslist.get(name).isStatus();
+        boolean status = usersMap.get(name).isStatus();
         if (status) {
             return "active";
         }
@@ -61,13 +67,21 @@ public class Users {
 
     public List<User> activeUser() {
         List<User> activeUsers = new ArrayList<>();
-        Set<String> keys = userslist.keySet();
+        Set<String> keys = usersMap.keySet();
         for (String s : keys) {
-            User user = userslist.get(s);
-            if(user.isStatus()){
+            User user = usersMap.get(s);
+            if (user.isStatus()) {
                 activeUsers.add(user);
             }
         }
         return activeUsers;
     }
+
+    public Map<String, User> getUsersMap() {
+        return usersMap;
+    }
+    
+    
+    
+    
 }

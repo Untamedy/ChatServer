@@ -1,6 +1,6 @@
 <%-- 
-    Document   : userlist
-    Created on : Aug 24, 2019, 5:25:03 PM
+    Document   : activeuser
+    Created on : Aug 26, 2019, 7:00:00 PM
     Author     : YBolshakova
 --%>
 
@@ -15,7 +15,7 @@
     </head>
     <body>
         <h2>This user is active now</h2>
-        <%List<User> users =(List<User>) request.getAttribute("listOfUser");%> 
+        <%List<User> users =(List<User>) request.getAttribute("listOfActiveUser");%> 
         <%for(User u: users){%>
             <%out.println(u.toString());%>
        <% }%>    

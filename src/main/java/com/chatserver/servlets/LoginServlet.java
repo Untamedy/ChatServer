@@ -27,7 +27,7 @@ public class LoginServlet extends HttpServlet {
         Users userList = Users.getInstance();
         session = request.getSession(true);
 
-        if (userList.getUserslist().containsKey(userName)) {
+        if (userList.getUsersMap().containsKey(userName)) {
             if (userList.getPass(userName).equalsIgnoreCase(password)) {
                 session.setAttribute("name", userName);
             }

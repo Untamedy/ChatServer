@@ -1,10 +1,8 @@
 package com.chatserver.servlets;
-
 import com.chatserver.entitys.User;
 import com.chatserver.model.Users;
 import java.io.IOException;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.RequestDispatcher;
@@ -19,18 +17,18 @@ import javax.servlet.http.HttpSession;
  *
  * @author YBolshakova
  */
-@WebServlet("/userlist")
-public class GetUserListServlet extends HttpServlet {
-
-    @Override
+@WebServlet("/activeuser")
+public class GetActiveUserList extends HttpServlet{
+    
+     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) {
         HttpSession session = request.getSession();
         if (!session.isNew()) {
             Users users = Users.getInstance();
             List<User> isActiveNow = users.getlist();
-            request.setAttribute("listOfUser", isActiveNow);
+            request.setAttribute("listOfActiveUser", isActiveNow);
         }
-        RequestDispatcher dispatcher = request.getRequestDispatcher("userList.jsp");
+        RequestDispatcher dispatcher = request.getRequestDispatcher("activeuser.jsp");
         try {
             dispatcher.forward(request, response);
         } catch (ServletException | IOException ex) {

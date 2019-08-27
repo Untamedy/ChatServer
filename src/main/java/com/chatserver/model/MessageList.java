@@ -37,6 +37,11 @@ public class MessageList {
         }
         String json = "";
         try {
+            List<Message> messages = JsonMessages.jsonMessages(list, n);
+            for(Message m: messages){
+                if(m.getTo().equalsIgnoreCase(json))
+            }
+            
             json = mapper.writeValueAsString(new JsonMessages(list, n));
         } catch (JsonProcessingException ex) {
             Logger.getLogger(MessageList.class.getName()).log(Level.SEVERE, null, ex);

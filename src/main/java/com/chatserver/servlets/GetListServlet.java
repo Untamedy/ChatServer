@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-@WebServlet("/getlist")
+@WebServlet("/get")
 public class GetListServlet extends HttpServlet {
 	
 	private MessageList msgList = MessageList.getInstance();
@@ -17,6 +17,7 @@ public class GetListServlet extends HttpServlet {
     @Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 		String fromStr = req.getParameter("from");
+                String fromRoom =req.getParameter("room");
 		int from = 0;
 		try {
 			from = Integer.parseInt(fromStr);
@@ -25,7 +26,7 @@ public class GetListServlet extends HttpServlet {
             return;
 		}
 		
-		String json = msgList.toJSON(from);
+		String json = msgList.toJSON(from,fromRoom);
 		if (json != null) {
 			OutputStream os = resp.getOutputStream();
             byte[] buf = json.getBytes(StandardCharsets.UTF_8);

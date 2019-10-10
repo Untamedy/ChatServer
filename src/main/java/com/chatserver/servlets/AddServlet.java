@@ -15,21 +15,22 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet("/add")
 public class AddServlet extends HttpServlet {
 
-	private MessageList msgList = MessageList.getInstance();
+    private MessageList msgList = MessageList.getInstance();
 
-	@Override
-	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-		byte[] buf = requestBodyToArray(req);
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        byte[] buf = requestBodyToArray(req);
         String bufStr = new String(buf, StandardCharsets.UTF_8);
 
-		Message msg = Message.fromJSON(bufStr);
-		if (msg != null)
-			msgList.add(msg);
-		else
-			resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-	}
+        Message msg = Message.fromJSON(bufStr);
+        if (msg != null) {
+            msgList.add(msg);
+        } else {
+            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+        }
+    }
 
-	private byte[] requestBodyToArray(HttpServletRequest req) throws IOException {
+    private byte[] requestBodyToArray(HttpServletRequest req) throws IOException {
         InputStream is = req.getInputStream();
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         byte[] buf = new byte[10240];
@@ -37,7 +38,9 @@ public class AddServlet extends HttpServlet {
 
         do {
             r = is.read(buf);
-            if (r > 0) bos.write(buf, 0, r);
+            if (r > 0) {
+                bos.write(buf, 0, r);
+            }
         } while (r != -1);
 
         return bos.toByteArray();

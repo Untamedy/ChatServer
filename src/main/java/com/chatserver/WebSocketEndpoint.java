@@ -24,6 +24,7 @@ public class WebSocketEndpoint {
 
     Map<String, UserSession> users = new HashMap<>();
     Map<String,List<String>> rooms=new HashMap<>();
+   Map<String,List<String>> messages = new HashMap();
     
     @OnMessage
     public void onMessage(Session session, String message) {
@@ -51,17 +52,62 @@ public class WebSocketEndpoint {
                     rooms.put("main",list);
                     break;
                 case "selectRoom":
+                   String newRoomName = (String)data.get("room");
+                   String curentRoomName = users.get(sessionId).getRoom();
                     if(users.containsKey(sessionId)){
-                    users.get(sessionId).setRoom("");
-                        
+                        if(!curentRoomName.equals(newRoomName)){
+                          List<String> curentRoom = rooms.get(curentRoomName);
+                           curentRoom.remove(sessionId);
+                           users.get(sessionId).setRoom(newRoomName);
+                          List<String> newRoom =  rooms.get(newRoomName);
+                          newRoom.add(sessionId);
+                        List<String> roomMsg = messages.get(newRoomName);
+                        for(String s:roomMsg){
+                              try {
+                                  session.getBasicRemote().sendObject(s);
+                              } catch (EncodeException ex) {
+                                  Logger.getLogger(WebSocketEndpoint.class.getName()).log(Level.SEVERE, null, ex);
+                              }
+                              
+                          }
+                        }   
                     }else{
-                        //
+                        session.getBasicRemote().sendText("User is not logined");
+                        
                     }
                     break;
                 case "roomMsg":
+                    StringBuilder msg = new StringBuilder();
+                    msg.append("From:");
+                    msg.append((String)data.get("from"));
+                    msg.append("To");
+                    msg.append(data.get("to"));
+                    msg.append(data.get("text"));
                     
+                    
+                    String room =(String) data.get("room");
+                    List<String> messages = this.messages.get(room);
+                    checkMsgCount(messages, msg.toString());
+                    
+                    for(String id: rooms.get(room)){
+                     session = users.get(id).getSession();
+                     session.getBasicRemote().sendText(msg.toString());
+                        
+                    }                                       
                     break;
                 case "privateMsg":
+                    String to =(String) data.get("to");
+                    session = users.get(to).getSession();
+                    if(null!=session){
+                    StringBuilder privateMsg = new StringBuilder();
+                    privateMsg.append("From:");
+                    privateMsg.append((String)data.get("from"));
+                    privateMsg.append("To");
+                    privateMsg.append(data.get(to));
+                    privateMsg.append(data.get("text"));
+                     session.getBasicRemote().sendText(privateMsg.toString());
+                    }                  
+                    
                     break;
             }
         } catch (IOException ex) {
@@ -84,6 +130,16 @@ public class WebSocketEndpoint {
     public void onDisconnect(Session session) {
         
         users.remove(session.getId());
+    }
+    
+    
+    public void checkMsgCount(List<String> messages, String message){
+        if(messages.size()>=10){
+            messages.remove(0);
+            messages.add(message);        
+            
+        }
+        
     }
 
 }

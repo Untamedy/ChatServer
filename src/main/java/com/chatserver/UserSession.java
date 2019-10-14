@@ -8,8 +8,7 @@ import javax.websocket.Session;
  */
 public class UserSession {
 
-    private String login;
-    private String password;
+    private String login;    
     private Session session;
     private String room;
 
@@ -21,13 +20,7 @@ public class UserSession {
         this.login = login;
     }
 
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
+       
 
     public Session getSession() {
         return session;

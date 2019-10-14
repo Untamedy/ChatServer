@@ -43,8 +43,7 @@ public class WebSocketEndpoint {
                         }
                     }
                     UserSession userSession = new UserSession();
-                    userSession.setLogin(login);
-                    userSession.setPassword(pwd);
+                    userSession.setLogin(login);                    
                     userSession.setRoom("main");
                     userSession.setSession(session);
                     users.put(sessionId, userSession);
@@ -113,9 +112,7 @@ public class WebSocketEndpoint {
         } catch (IOException ex) {
             try {
                 session.getBasicRemote().sendObject("parsing message error");
-            } catch (IOException ex1) {
-                Logger.getLogger(WebSocketEndpoint.class.getName()).log(Level.SEVERE, null, ex1);
-            } catch (EncodeException ex1) {
+            } catch (IOException | EncodeException ex1) {
                 Logger.getLogger(WebSocketEndpoint.class.getName()).log(Level.SEVERE, null, ex1);
             }
         }
@@ -127,8 +124,7 @@ public class WebSocketEndpoint {
     }
 
     @OnClose
-    public void onDisconnect(Session session) {
-        
+    public void onDisconnect(Session session) {        
         users.remove(session.getId());
     }
     
